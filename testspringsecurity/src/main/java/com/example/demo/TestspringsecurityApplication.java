@@ -23,9 +23,16 @@ public class TestspringsecurityApplication {
 		passwordEncoderSimple();
 		listProvider();
 		listProviderServices();
-		UtilisationProviderServices();
+		//UtilisationProviderServices();
 		listAlgo();
-		calculerValeurDeHachage("MD5", "message");
+				
+	    String monMessage = "Mon message";
+	    calculerValeurDeHachage("MD2", monMessage);
+	    calculerValeurDeHachage("MD5", monMessage);
+	    calculerValeurDeHachage("SHA-1", monMessage);
+	    calculerValeurDeHachage("SHA-256", monMessage);
+	    calculerValeurDeHachage("SHA-384", monMessage);
+	    calculerValeurDeHachage("SHA-512", monMessage);
 
 	}
 
@@ -62,12 +69,12 @@ public class TestspringsecurityApplication {
 		Provider provider = Security.getProvider("SunEC");
 		System.out.println("\nServices du provider " + provider.getName());
 		for (Service service : provider.getServices()) {
-			System.out.println("Service \t" + service.getType() + " " + service.getAlgorithm());
+			System.out.println("Service : " + service.getType() + " " + service.getAlgorithm());
 		}
 	}
 	public static void listAlgo() {
 	for (String algo : Security.getAlgorithms("Cipher")) {
-	      System.out.println(algo);
+	      System.out.println("Algorithm : "+algo);
 	    }
 	  }
 	
@@ -100,19 +107,26 @@ public class TestspringsecurityApplication {
 	
 	public static byte[] calculerValeurDeHachage(String algorithme,
 		      String monMessage) {
-		    byte[] digest = null;
-		    System.out.println("\n ");
+		    byte[] digest = null;		    
 		    try {
 		      MessageDigest sha = MessageDigest.getInstance(algorithme);
 		      sha.update(monMessage.getBytes());
 		      digest = sha.digest();
-		      System.out.println("algorithme : " + algorithme);
-		     System.out.println(digest.toString());		 
-		     //System.out.println(bytesToHex(digest));
+		     System.out.println("algorithme : " + algorithme + "\t" + bytesToHex(digest));
 		    } catch (NoSuchAlgorithmException e) {
 		      e.printStackTrace();
 		    }
 		    return digest;
 		  }
-
+	
+	public static String bytesToHex(byte[] b) {
+	    char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+	        'B', 'C', 'D', 'E', 'F' };
+	    StringBuffer buffer = new StringBuffer();
+	    for (int j = 0; j < b.length; j++) {
+	      buffer.append(hexDigits[(b[j] >> 4) & 0x0f]);
+	      buffer.append(hexDigits[b[j] & 0x0f]);
+	    }
+	    return buffer.toString();
+	  }
 }
